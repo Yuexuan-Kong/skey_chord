@@ -1,0 +1,13 @@
+import chord.model.hcqt
+import chord.stone
+import ssl_framework.dataloader
+import ssl_framework.dataloader.selfsupervised.main
+
+ssl_framework.dataloader.get_datasets.pretext = 'constrastive'
+SSLDataset.batch_size = 256
+# SSLDataset.buffer_size = 99
+dataloader_tf.n_views = 1
+
+get_learning_rate_scheduler.n_epochs_cosine = 999
+
+
