@@ -83,7 +83,7 @@ def add_audio_tensorboard(
 
 def add_losses_tensorboard(writer: Any, progress_bar: Any, epoch: int) -> float:
     val_loss = -1.0
-    for key in ["train_total","train_pos", "train_equi", "train_distribution", "train_mode", "val_total","val_pos", "val_equi", "val_distribution", "val_mode"]:
+    for key in ["train_total", "val_total"]:
         loss = progress_bar._values[key][0] / progress_bar._values[key][1]
         split, key= key.split("_")
         writer.add_scalar("{}/{}".format(split, key), loss, epoch)
