@@ -217,7 +217,6 @@ def main(ckpt_path: str, audio_path: str, extension: str, average:bool) -> None:
         song_path: get_embedding(sr, dur, hcqt, chromanet, crop_fn, test_batch, song_path, average).cpu().numpy()
         for test_batch, song_path in pbar
     }
-    import pdbr;pdbr.set_trace()
     path_results = os.path.join(audio_path, "relative_pitch_profile", model_name) 
     if not os.path.exists(path_results):
         os.makedirs(path_results)
