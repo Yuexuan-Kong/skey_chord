@@ -57,7 +57,7 @@ class ChordSingleTrackDataset(Data.Dataset):
         self.seg_shift_length = seg_shift_length
 
         self.seg_frames = int(seg_length * sr) if seg_length > 0.0 else -1
-        self.seg_shift_frames = int(seg_shift_length * seg_shift_length)
+        self.seg_shift_frames = int(seg_shift_length * sr)
 
         # Load the label file
         self.label_df: pd.DataFrame = pd.read_csv(label_path, **read_label_csv_kwargs[dataset_name])
