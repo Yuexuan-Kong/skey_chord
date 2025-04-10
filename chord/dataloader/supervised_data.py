@@ -86,7 +86,7 @@ class ChordSingleTrackDataset(Data.Dataset):
 
         root_labels = -1 * np.ones(len(time_frame), dtype=np.int64)
         quality_labels = -1 * np.ones(len(time_frame), dtype=np.int64)
-        bass_labels = -1 * np.ones(len(time_frame), dtype=np.int64)
+        # bass_labels = -1 * np.ones(len(time_frame), dtype=np.int64)
         for _, row in self.label_df.iterrows():
             if "majmin" in row:
                 # For SWD and BSQD, majmin is already in the format we need
@@ -97,8 +97,8 @@ class ChordSingleTrackDataset(Data.Dataset):
 
             root_labels[(time_frame - 0.5 / self.label_fps > row["start"]) & (time_frame + 0.5 / self.label_fps < row["end"])] = root
             quality_labels[(time_frame - 0.5 / self.label_fps > row["start"]) & (time_frame + 0.5 / self.label_fps < row["end"])] = quality
-            bass_labels[(time_frame - 0.5 / self.label_fps > row["start"]) & (time_frame + 0.5 / self.label_fps < row["end"])] = bass
-        return dict(x=x, y_root=root_labels, y_quality=quality_labels, y_bass=bass_labels)
+            # bass_labels[(time_frame - 0.5 / self.label_fps > row["start"]) & (time_frame + 0.5 / self.label_fps < row["end"])] = bass
+        return dict(x=x, y_root=root_labels, y_quality=quality_labels)
 
     def encode_chord(self, chord: str) -> int:
         """

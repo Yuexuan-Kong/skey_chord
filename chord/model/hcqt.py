@@ -8,18 +8,22 @@ import torchaudio
 # relies on nnAudio v0.3.2
 # pip install git+https://github.com/KinWaiCheuk/nnAudio.git#subdirectory=Installation
 @gin.configurable
-class HarmonicVQT(nnAudio.features.vqt.VQT):
+class HarmonicVQT(nnAudio.features.CQT):
     r"""Harmonic VQT: A collection of VQTs with different shifts.
     Inspired by Bittner, McFee, Salamon, Li, Bello.
     "Deep Salience Representations for F0 Estimation in Polyphonic Music". ISMIR 2017
 
     Args:
+        sr (int): Sampling rate.
+        hop_length (int): Hop length.
         harmonics (Collection[float]): Harmonics to be included.
         fmin (float): Minimum frequency to be included.
         n_bins (int): Number of bins in the output spectrogram.
         bins_per_octave (int, optional): Number of bins per octave. Defaults to 12.
     """
-    def __init__(self, *, harmonics=[1], fmin=27.5, n_bins=99, bins_per_octave=12, **kwargs):
+    def __init__(self, *, sr=16000, hop_length=160, harmonics=[1], fmin=27.5, n_bins=99, bins_per_octave=12, **kwargs):
+        self.sr = sr
+        self.hop_length = hop_length
         self.harmonics = harmonics
         self.bin_shifts = []
         self.n_bins_per_slice = n_bins
@@ -30,7 +34,7 @@ class HarmonicVQT(nnAudio.features.vqt.VQT):
         low_octave_shift = min([0] + self.bin_shifts) / bins_per_octave
         fmin = fmin * (2 ** low_octave_shift)
         n_bins = n_bins + max([0] + self.bin_shifts) - min([0] + self.bin_shifts)
-        super().__init__(fmin=fmin, n_bins=n_bins, bins_per_octave=bins_per_octave, **kwargs)
+        super().__init__(sr=sr, hop_length=hop_length, fmin=fmin, n_bins=n_bins, bins_per_octave=bins_per_octave, **kwargs)
 
 
     def forward(self, x, output_format='Magnitude', normalization_type='librosa'):
