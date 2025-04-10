@@ -39,6 +39,7 @@ class HarmonicVQT(nnAudio.features.CQT):
 
     def forward(self, x, output_format='Magnitude', normalization_type='librosa'):
         vqt = super().forward(x, output_format, normalization_type)
+
         hvqt = []
         for shift in self.bin_shifts:
             bin_start = shift - min([0] + self.bin_shifts)
@@ -46,8 +47,9 @@ class HarmonicVQT(nnAudio.features.CQT):
             vqt_slice = vqt[:, bin_start:bin_stop, ...]
             hvqt.append(vqt_slice)
         hvqt = torch.stack(hvqt, dim=1)
-        log_hcqt = ((1.0/80.0) * torchaudio.transforms.AmplitudeToDB(top_db=80)(hvqt)) + 1.0
-        return log_hcqt
+        # This is moved into STONE, in self.normalize_hcqt
+        # log_hcqt = ((1.0/80.0) * torchaudio.transforms.AmplitudeToDB(top_db=80)(hvqt)) + 1.0
+        return hvqt
 
 
 class CropCQT(torch.nn.Module):

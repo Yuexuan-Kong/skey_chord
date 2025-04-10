@@ -32,7 +32,7 @@ class Z_transformation(torch.nn.Module):
         """
         Complex Z tranformation for loss calculation, project the 12 probability bins to a single point on a disk of r=1. 
         """
-        z = torch.matmul(torch.complex(y, 0*y), self.alpha.cuda(self.device))
+        z = torch.matmul(torch.complex(y, 0*y), self.alpha.to(y.device))
         return z
 
 

@@ -2,6 +2,7 @@ from typing import Any, List, Tuple, Union, Dict
 
 import gin  # type: ignore
 import torch
+import torchaudio
 from torch import Tensor
 from einops import rearrange
 
@@ -109,7 +110,19 @@ class Stone(torch.nn.Module):
             source_transpose = crop_fn(hcqt, transpose)
             stack_input = torch.cat((stack_original, source_transpose), dim=0) # torch.Size([384, 1, 84, 646])
             stack_input = rearrange(stack_input, "b 1 f t -> b f t")
+            stack_input = self.normalize_hcqt(stack_input)
 
             y = self.chromanet(stack_input) # (b, 12, t)
 
         return (y, difference)
+    
+    def normalize_hcqt(self, hcqt: Tensor) -> Tensor:
+        """
+        Normalize the HCQT tensor to have a mean of 0 and a standard deviation of 1.
+        Shape: [batch_size, ..., n_bins, n_frames]
+        """
+        log_hcqt = torchaudio.transforms.AmplitudeToDB(top_db=80)(hcqt)
+        # log_hcqt = log_hcqt = ((1.0/80.0) * torchaudio.transforms.AmplitudeToDB(top_db=80)(hcqt)) + 1.0
+        mean = log_hcqt.mean(dim=(-1, -2), keepdim=True)
+        std = (log_hcqt.var(dim=(-1, -2), keepdim=True) + 1e-6).sqrt()
+        return (log_hcqt - mean) / std

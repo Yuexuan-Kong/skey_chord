@@ -4,6 +4,7 @@ import torch
 
 from chord.model.hcqt import HarmonicVQT
 from chord.stone import Stone
+from chord.stone_loss import CrossPowerSpectralDensityLoss
 
 def test_stone():
     """
@@ -27,3 +28,8 @@ def test_stone():
     y, difference = stone(train_batch)
     assert y.shape == (bs * 2, 12, output_frames)
     assert difference.shape == (bs, )
+
+    loss_fn = CrossPowerSpectralDensityLoss(circle_type=7, device="cpu")
+    loss = loss_fn((y, difference))
+
+    assert loss["loss"] > 0
