@@ -21,7 +21,7 @@ class HarmonicVQT(nnAudio.features.CQT):
         n_bins (int): Number of bins in the output spectrogram.
         bins_per_octave (int, optional): Number of bins per octave. Defaults to 12.
     """
-    def __init__(self, *, sr=16000, hop_length=160, harmonics=[1], fmin=27.5, n_bins=99, bins_per_octave=12, **kwargs):
+    def __init__(self, *, sr=16000, hop_length=160, harmonics=[1], fmin=32.7, n_bins=96, bins_per_octave=12, **kwargs):
         self.sr = sr
         self.hop_length = hop_length
         self.harmonics = harmonics

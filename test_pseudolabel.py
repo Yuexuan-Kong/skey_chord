@@ -16,20 +16,18 @@ def test_quality_single_track_swd():
         seg_shift_length=10.0,
     )
     
-    cqt_fn = HarmonicVQT(sr=22050, hop_length=2205)
+    cqt_fn = HarmonicVQT(sr=16000, hop_length=1600)
     crop_cqt = CropCQT(84)
+    resampler = torchaudio.transforms.Resample(orig_freq=22050, new_freq=16000)
 
     for i in range(len(dataset)):
         data = dataset[i]
 
         x = data["x"].unsqueeze(0)
+        x = resampler(x)
         y_root = torch.from_numpy(data["y_root"]).unsqueeze(0)
 
-        # cqt = cqt_fn(x)[..., :-1]
-        import librosa
-        import numpy as np
-        cqt = np.abs(librosa.cqt(y=x[0, 0].numpy(), sr=22050, hop_length=2205, n_bins=99))[..., :-1]
-        cqt = torch.from_numpy(cqt).unsqueeze(0).unsqueeze(0)
+        cqt = cqt_fn(x)[..., :-1]
         cqt = crop_cqt(cqt, torch.zeros(len(x), ))
         
         cqt = cqt.squeeze(dim=1)
@@ -54,19 +52,17 @@ def test_root_single_track_swd():
         seg_shift_length=10.0,
     )
     
-    cqt_fn = HarmonicVQT(sr=22050, hop_length=2205)
+    cqt_fn = HarmonicVQT(sr=16000, hop_length=1600)
     crop_cqt = CropCQT(84)
+    resampler = torchaudio.transforms.Resample(orig_freq=22050, new_freq=16000)
 
     for i in range(len(dataset)):
         data = dataset[i]
 
         x = data["x"].unsqueeze(0)
-        
-        # cqt = cqt_fn(x)[..., :-1]
-        import librosa
-        import numpy as np
-        cqt = np.abs(librosa.cqt(y=x[0, 0].numpy(), sr=22050, hop_length=2205, n_bins=99))[..., :-1]
-        cqt = torch.from_numpy(cqt).unsqueeze(0).unsqueeze(0)
+        x = resampler(x)
+
+        cqt = cqt_fn(x)[..., :-1]
         cqt = crop_cqt(cqt, torch.zeros(len(x), ))
         
         cqt = cqt.squeeze(dim=1)
